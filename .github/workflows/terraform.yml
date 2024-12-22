@@ -36,3 +36,14 @@ jobs:
       # Step 7: Show imported resources
       - name: 'Terraform Show'
         run: terraform show
+
+      # Step 8: Upload the terraform.tfstate as an artifact
+      - name: 'Upload terraform.tfstate as artifact'
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: terraform-state
+          path: terraform.tfstate
+
+      # Optional Step 9: Apply the imported state (if you want to make changes)
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve
