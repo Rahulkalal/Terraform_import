@@ -1,7 +1,7 @@
 name: Deploy Infrastructure
 
 on:
-  workflow_dispatch:  # Allows manual trigger of the workflow from the GitHub Actions UI
+  workflow_dispatch: # Allows manual trigger of the workflow from the GitHub Actions UI
 
 jobs:
   terraform:
@@ -21,17 +21,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: Verify Terraform folder
-        run: ls -la  # Lists the content of the working directory to confirm folder structure
-
-      - name: Terraform Init
+      - name: 'Terraform Init'
         run: terraform init
-        working-directory: terraform  # Run Terraform commands inside the terraform folder
 
-      - name: Terraform Plan
+      - name: 'Terraform Import EC2'
+        run: terraform import aws_instance.hands_on_hcl i-0cd5bf83263a8cbd3
+
+      - name: 'Terraform Plan'
         run: terraform plan
-        working-directory: terraform  # Run Terraform commands inside the terraform folder
 
-      - name: Terraform Apply
+      - name: 'Terraform Apply'
         run: terraform apply -auto-approve
-        working-directory: terraform  # Run Terraform commands inside the terraform folder
