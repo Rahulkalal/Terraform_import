@@ -1,7 +1,15 @@
 name: Deploy Infrastructure
 
 on:
-  workflow_dispatch: # Allows manual trigger of the workflow from the GitHub Actions UI
+  workflow_dispatch:  # Allows manual trigger of the workflow from the GitHub Actions UI
+    inputs:
+      resource_type:
+        description: 'The type of resource to import (e.g., aws_instance, aws_security_group, etc.)'
+        required: true
+        default: 'aws_instance'
+      resource_id:
+        description: 'The ID of the resource to import (e.g., i-0cd5ertberf8etetrer26eter3a8cbereted3)'
+        required: true
 
 jobs:
   terraform:
@@ -24,9 +32,11 @@ jobs:
       - name: 'Terraform Init'
         run: terraform init
 
-      - name: 'Terraform Import EC2'
-        run: terraform import aws_instance.hands_on_hcl i-0cd5bf83263a8cbd3
-
+      # Step 5: Dynamically import resource
+      - name: 'Terraform Import Resource'
+        run: |
+          terraform import ${{ github.event.inputs.resource_type }}.${{ github.event.inputs.resource_id }} ${{ github.event.inputs.resource_id }}
+      
       - name: 'Terraform Plan'
         run: terraform plan
 
@@ -50,4 +60,3 @@ jobs:
         with:
           name: terraform-state
           path: ./downloaded-artifacts
-
