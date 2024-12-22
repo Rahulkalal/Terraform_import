@@ -1,15 +1,21 @@
 name: Deploy Infrastructure
 
 on:
-  workflow_dispatch:  # Allows manual trigger of the workflow from the GitHub Actions UI
+  workflow_dispatch:
     inputs:
       resource_type:
         description: 'The type of resource to import (e.g., aws_instance, aws_security_group, etc.)'
         required: true
-        default: 'aws_instance'
       resource_id:
         description: 'The ID of the resource to import (e.g., i-0cd5ertberf8etetrer26eter3a8cbereted3)'
         required: true
+      resource_name:
+        description: 'The logical name of the resource in Terraform (e.g., hands_on_hcl)'
+        required: true
+      aws_region:
+        description: 'The AWS region where the resource exists (e.g., us-east-1)'
+        required: true
+        default: 'us-east-1'
 
 jobs:
   terraform:
@@ -27,27 +33,26 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"
+          aws-region: ${{ github.event.inputs.aws_region }}
 
       - name: 'Terraform Init'
         run: terraform init
 
-      # Step 5: Dynamically import resource
+      # Step 5: Dynamically import the resource based on user input
       - name: 'Terraform Import Resource'
         run: |
-          terraform import ${{ github.event.inputs.resource_type }}.${{ github.event.inputs.resource_id }} ${{ github.event.inputs.resource_id }}
-      
+          terraform import ${GITHUB_EVENT_INPUT_RESOURCE_TYPE}.${GITHUB_EVENT_INPUT_RESOURCE_NAME} ${GITHUB_EVENT_INPUT_RESOURCE_ID}
+
       - name: 'Terraform Plan'
         run: terraform plan
 
       - name: 'Terraform Apply'
         run: terraform apply -auto-approve
 
-      # Step 7: Show imported resources
       - name: 'Terraform Show'
         run: terraform show
 
-      # Step 8: Upload the terraform.tfstate as an artifact
+      # Step 8: Upload terraform.tfstate as artifact
       - name: 'Upload terraform.tfstate as artifact'
         uses: actions/upload-artifact@v4.5.0
         with:
