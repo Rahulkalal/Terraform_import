@@ -6,11 +6,11 @@ on:
       resource_type:
         description: 'The type of resource to import (e.g., aws_instance, aws_security_group, etc.)'
         required: true
-      resource_id:
-        description: 'The ID of the resource to import (e.g., i-0cd5ertberf8etetrer26eter3a8cbereted3)'
-        required: true
       resource_name:
         description: 'The logical name of the resource in Terraform (e.g., hands_on_hcl)'
+        required: true        
+      resource_id:
+        description: 'The ID of the resource to import (e.g., i-0cd5ertb3)'
         required: true
       aws_region:
         description: 'The AWS region where the resource exists (e.g., us-east-1)'
@@ -41,7 +41,7 @@ jobs:
       # Step 5: Dynamically import the resource based on user input
       - name: 'Terraform Import Resource'
         run: |
-          terraform import ${GITHUB_EVENT_INPUT_RESOURCE_TYPE}.${GITHUB_EVENT_INPUT_RESOURCE_NAME} ${GITHUB_EVENT_INPUT_RESOURCE_ID}
+          terraform import ${{ github.event.inputs.resource_type }}.${{ github.event.inputs.resource_name }} ${{ github.event.inputs.resource_id }}
 
       - name: 'Terraform Plan'
         run: terraform plan
