@@ -1,9 +1,11 @@
-resource "aws_s3_bucket" "unique-terraform-state-bucket-hcl-3210" {
-  # Declare the S3 bucket resource here.
-  # You don't need to define everything (just the name is enough to import).
+provider "aws" {
+  region = "us-east-1"
 }
 
-resource "aws_s3_bucket_acl" "import_example" {
-  bucket = aws_s3_bucket.unique-terraform-state-bucket-hcl-3210.id  # Reference the imported S3 bucket
-  acl    = "private"
+resource "aws_instance" "hands_on_hcl" {
+  # You can leave the resource block empty for now or add some basic attributes later
+  # Placeholder for the EC2 instance.
+  # Add required fields like `ami` and `instance_type` after the import
+  ami           = "ami-0e2c8caa4b6378d8c"  # Replace with actual AMI ID
+  instance_type = "t2.micro"              # Replace with actual instance type
 }
