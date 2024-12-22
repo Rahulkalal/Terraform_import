@@ -44,13 +44,10 @@ jobs:
           name: terraform-state
           path: terraform.tfstate
 
-      # Step 9: Download the artifact (same job)
+      # Step 9: Download the artifact 
       - name: 'Download terraform.tfstate artifact'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.8
         with:
           name: terraform-state
           path: ./downloaded-artifacts
 
-      # Step 10: List the downloaded files (to confirm it's there)
-      - name: 'List downloaded files'
-        run: ls ./downloaded-artifacts
